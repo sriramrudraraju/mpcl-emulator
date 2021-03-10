@@ -1,24 +1,48 @@
-import React from 'react';
-import logo from '../../common/images/logo.svg';
+import React, { useState, useCallback } from 'react';
 import './app.css';
 
-function App() {
+import { compiler } from '../../emulator/compiler';
+
+const App = () => {
+
+  const [packetInput, packetinputChnage] = useState('');
+  const [packetVerifyError, packetVerifyErrorchange] = useState('');
+
+  const textAreaChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const inputVal = event.currentTarget.value;
+    packetinputChnage(inputVal);
+    // reset error on each change
+    packetVerifyErrorchange('');
+    try {
+      const parsedText = compiler(inputVal);
+      console.log(parsedText);
+    } catch (error) {
+      packetVerifyErrorchange(error.message)
+    }
+  }, [packetinputChnage, packetVerifyErrorchange]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <textarea
+        rows={30}
+        cols={50}
+        value={packetInput}
+        onChange={textAreaChange}
+        placeholder="Enter packet format"
+      />
+     {
+       packetVerifyError 
+       ? (
+        <div className="error">
+          {packetVerifyError}
+        </div>
+       ) : (
+        <div className="success">
+          "All good ..."
+        </div>
+       )
+       
+     }
     </div>
   );
 }
