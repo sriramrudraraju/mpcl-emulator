@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import './app.css';
 
 import { compiler } from '../../emulator/compiler';
+import { Renderer } from '../../emulator/renderer';
 
 const App = () => {
 
@@ -14,8 +15,10 @@ const App = () => {
     // reset error on each change
     packetVerifyErrorchange('');
     try {
-      const parsedText = compiler(inputVal);
-      console.log(parsedText);
+      if (inputVal) {
+        const parsedText = compiler(inputVal);
+        console.log(parsedText);
+      }
     } catch (error) {
       packetVerifyErrorchange(error.message)
     }
@@ -23,13 +26,16 @@ const App = () => {
 
   return (
     <div>
-      <textarea
-        rows={30}
-        cols={50}
-        value={packetInput}
-        onChange={textAreaChange}
-        placeholder="Enter packet format"
-      />
+      <div className="wrapper">
+        <textarea
+          rows={30}
+          cols={50}
+          value={packetInput}
+          onChange={textAreaChange}
+          placeholder="Enter packet format"
+        />
+        <Renderer />
+      </div>
      {
        packetVerifyError 
        ? (

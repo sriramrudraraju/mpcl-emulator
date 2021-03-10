@@ -22,6 +22,10 @@ import { fieldParser } from './fields';
 
 export const compiler = (input: String) => {
   var modifiedString = input;
+  
+  // Trim white space
+  modifiedString.replace(/\s+/g, '');
+  
   // Begin each packet with a start of header ({).
   if (modifiedString.charAt(0) !== Punctuation.START_OF_HEADER) {
     throw new Error(`Begin each packet with a start of header (${Punctuation.START_OF_HEADER})`);
